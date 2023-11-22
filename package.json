@@ -1,0 +1,14 @@
+{
+  "name": "reach_ai",
+  "version": "1.0.0",
+  "description": "Forecast daily revenue for a set of stations in a bike share system in Austin, TX.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brett St. George",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
