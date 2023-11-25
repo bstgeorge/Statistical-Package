@@ -14,6 +14,12 @@ let test_matrix2 = [
   [5, 6]
 ];
 
+let test_invertMatrix = [
+  [3, -0.1, -0.2],
+  [0.1, 7, -0.3],
+  [0.3, -0.2, 10]
+];
+
 let A1 = [
   [1, 0, 1, 2],
   [0, 1, -2, 0],
@@ -135,9 +141,45 @@ class TransposeMatrix {
     this.result = Array(this.resultRows).fill().map(() => {
       return Array(this.resultCols).fill(0);
     })
+    for (let i = 0; i < this.resultRows; i++) {
+      for (let j = 0; j < this.resultCols; j++) {
+        this.result[i][j] = matrix[j][i];
+      }
+    }
   }
-
 }
+
+class InverseMatrix {
+  constructor (matrix) {
+    this.matrix = matrix.slice(0);
+    this.transposed = new TransposeMatrix(matrix).result;
+    this.rows = matrix.length;
+    this.cols = matrix[0].length;
+    this.identity = Array(this.rows).fill().map(() => {
+      return Array(this.cols).fill(0);
+    })
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        if (i === j) {
+          this.identity[i][j] = 1;
+        }
+      }
+    }
+    this.inverse = Array(this.rows).fill().map(() => {
+      return Array(this.cols).fill(0);
+    })
+    let temp = [];
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        temp[j] = Array(1).fill(this.identity[j][i]);
+      }
+      console.log('A: ', this.matrix.slice(0));
+      console.log('B: ', temp);
+      this.inverse[i] = new LUDcomp(this.matrix.slice(0), temp).X
+      console.log('X: ', this.inverse[i]);
+    }
+  }
+ }
 
 class InvertMatrix {
   constructor (matrix) {
@@ -330,33 +372,33 @@ class MultiVariateRegression {
     this.rAdjSquared = 1 - (this.rss/(this.obs - n)) / (this.tss/(this.obs - 1));
     // compute standard error for each of the coefficients
     // ASSUMPTION:  Independent variables are uncorrelated
-    let temp = 0
-    for (let i = 1; i < n; i++) {
-      temp += (this.sampleData[i].mean ** 2) / this.sampleData[i].var;
-    }
-    this.coefficientVariances[0] = (this.popVarEst / this.obs) * (1 + temp);
-    this.coefficientStandardErrors[0] = Math.sqrt(this.coefficientVariances[0])
-    for (let i = 1; i < n; i++) {
-      temp = 0;
-      for (let j = 0; j < this.data[i].length; j++) {
-        temp += Math.pow(this.data[i][j] - this.sampleData[i].mean, 2);
-      }
-      this.coefficientVariances[i] = this.popVarEst / temp;
-      this.coefficientStandardErrors[i] = Math.sqrt(this.coefficientVariances[i]);
-    }
-    this.constMatrix = Array(this.dfRegression).fill().map(() => {
-      return Array(this.dfRegression).fill(0);
-    })
-    for (let i = 0; i < this.dfRegression; i++)  {
-      for (let j = 0; j < this.dfRegression; j++) {
-        for (let k = 0; k < this.obs; k++) {
-          this.constMatrix[i][j] +=  this.data[i + 1][k] * this.data[j + 1][k];
-        }
-        this.constMatrix[i][j] = this.constMatrix[i][j] ** 2;  // only if  covariance of coefficient is assumed zero
-      }
-    }
-    this.zeroMatrix = Array(this.dfRegression).fill(0)
-    this.varMatrix = new LUDcomp(this.constMatrix, this.zeroMatrix).X;
+      // let temp = 0
+      // for (let i = 1; i < n; i++) {
+      //   temp += (this.sampleData[i].mean ** 2) / this.sampleData[i].var;
+      // }
+      // this.coefficientVariances[0] = (this.popVarEst / this.obs) * (1 + temp);
+      // this.coefficientStandardErrors[0] = Math.sqrt(this.coefficientVariances[0])
+      // for (let i = 1; i < n; i++) {
+      //   temp = 0;
+      //   for (let j = 0; j < this.data[i].length; j++) {
+      //     temp += Math.pow(this.data[i][j] - this.sampleData[i].mean, 2);
+      //   }
+      //   this.coefficientVariances[i] = this.popVarEst / temp;
+      //   this.coefficientStandardErrors[i] = Math.sqrt(this.coefficientVariances[i]);
+      // }
+      // this.constMatrix = Array(this.dfRegression).fill().map(() => {
+      //   return Array(this.dfRegression).fill(0);
+      // })
+      // for (let i = 0; i < this.dfRegression; i++)  {
+      //   for (let j = 0; j < this.dfRegression; j++) {
+      //     for (let k = 0; k < this.obs; k++) {
+      //       this.constMatrix[i][j] +=  this.data[i + 1][k] * this.data[j + 1][k];
+      //     }
+      //     this.constMatrix[i][j] = this.constMatrix[i][j] ** 2;  // only if  covariance of coefficient is assumed zero
+      //   }
+      // }
+      // this.zeroMatrix = Array(this.dfRegression).fill(0)
+      // this.varMatrix = new LUDcomp(this.constMatrix, this.zeroMatrix).X;
   }
 }
 
@@ -387,5 +429,8 @@ class MultiVariateRegression {
 // let testCorr = new CorrMatrix(test_arr1, test_arr2, test_arr3);
 // console.log(testCorr);
 
-let testTranspose = new TransposeMatrix(test_matrix2);
-console.log(testTranspose);
+// let testTranspose = new TransposeMatrix(test_matrix2);
+// console.log(testTranspose);
+
+let testInverse = new InverseMatrix(test_invertMatrix);
+console.log(testInverse);
