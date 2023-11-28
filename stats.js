@@ -14,11 +14,29 @@ let test_matrix2 = [
   [5, 6]
 ];
 
-let test_invertMatrix = [
-  [3, -0.1, -0.2],
-  [0.1, 7, -0.3],
-  [0.3, -0.2, 10]
+let test_toInvert = [
+  [0, -3, -2],
+  [1, -4, -2],
+  [-3, 4, 1]
 ];
+
+let test_inverted = [
+  [4, -5, -2],
+  [5, -6, -2],
+  [-8, 9, 3]
+]
+
+let test_identity = [
+  [1, 0, 0],
+  [0, 1, 0],
+  [0, 0, 1]
+]
+
+let test_iSingle = [
+    [1],
+    [0],
+    [0]
+]
 
 let A1 = [
   [1, 0, 1, 2],
@@ -151,7 +169,7 @@ class TransposeMatrix {
 
 class InverseMatrix {
   constructor (matrix) {
-    this.matrix = matrix.slice(0);
+    this.matrix = matrix.slice();
     this.transposed = new TransposeMatrix(matrix).result;
     this.rows = matrix.length;
     this.cols = matrix[0].length;
@@ -170,22 +188,12 @@ class InverseMatrix {
     })
     let temp = [];
     for (let i = 0; i < this.rows; i++) {
-      for (let j = 0; j < this.cols; j++) {
-        temp[j] = Array(1).fill(this.identity[j][i]);
-      }
-      console.log('A: ', this.matrix.slice(0));
-      console.log('B: ', temp);
-      this.inverse[i] = new LUDcomp(this.matrix.slice(0), temp).X
-      console.log('X: ', this.inverse[i]);
+      this.inverse[i] = new LUDcomp(this.matrix.slice(), this.identity[i]).X
     }
+    this.inverse = new TransposeMatrix(this.inverse).result;
   }
  }
 
-class InvertMatrix {
-  constructor (matrix) {
-
-  }
-}
 
 // Ordinary Least Squares
 class OLS {
@@ -223,6 +231,20 @@ class LUDcomp {
     this.A = matrixA.slice();
     this.B = matrixB.slice();
     let n = matrixA.length;
+    // If this.A[0][0] is zero, my algorithmic implmentation cannot find a solution
+    // in this case, swap rows until the this.A[0][0] is a non-zero number
+    for (let i = 1; i < n - 1; i++) {
+      if (this.A[0][0] === 0) {
+        let tempA = this.A[i].slice();
+        let tempB = this.B[i];
+        this.A[i] = this.A[0];
+        this.B[i] = this.B[0];
+        this.A[0] = tempA;
+        this.B[0] = tempB;
+      } else {
+        break;
+      }
+    }
     this.L = Array(n).fill().map(() => {
       return Array(n).fill(0);
     })
@@ -264,7 +286,7 @@ class LUDcomp {
         }
       }
     }
-    // AX = B; A is factored into LU; LUX = B; let UX = Y sucht that LY = B:
+    // AX = B; A is factored into LU; LUX = B; let UX = Y such that LY = B:
     // now solve for this.Y
     this.Y = Array(n).fill(0)
     for (let i = 0; i < n; i++) {
@@ -411,6 +433,9 @@ class MultiVariateRegression {
 // let testMult = new MultMatrices(test_matrix1, test_matrix2);
 // console.log(testMult);
 
+// let testMult = new MultMatrices(test_toInvert, test_inverted);
+// console.log(testMult);
+
 // let testOLS = new OLS(test_X,test_Y);
 // console.log(testOLS);
 
@@ -432,5 +457,8 @@ class MultiVariateRegression {
 // let testTranspose = new TransposeMatrix(test_matrix2);
 // console.log(testTranspose);
 
-let testInverse = new InverseMatrix(test_invertMatrix);
+// let test_LUDComp = new LUDcomp(test_toInvert, test_iSingle);
+// console.log(test_LUDComp);
+
+let testInverse = new InverseMatrix(test_toInvert);
 console.log(testInverse);
