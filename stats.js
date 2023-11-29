@@ -477,3 +477,4 @@ let testMult2 = new MultMatrices(test_toInvert2, testInverse2.inverse);
 console.log(testMult2)
 
 // need to implement some basic rounding next
+// add comments throughout
