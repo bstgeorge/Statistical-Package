@@ -32,6 +32,13 @@ let test_identity = [
   [0, 0, 1]
 ]
 
+let test_toInvert2 = [
+  [3, -0.1, -0.2],
+  [0.1, 7, -0.3],
+  [-0.3, -0.2, 10]
+];
+
+
 let test_iSingle = [
     [1],
     [0],
@@ -460,5 +467,13 @@ class MultiVariateRegression {
 // let test_LUDComp = new LUDcomp(test_toInvert, test_iSingle);
 // console.log(test_LUDComp);
 
-let testInverse = new InverseMatrix(test_toInvert);
-console.log(testInverse);
+// let testInverse = new InverseMatrix(test_toInvert);
+// console.log(testInverse);
+
+let testInverse2 = new InverseMatrix(test_toInvert2);
+console.log(testInverse2);
+
+let testMult2 = new MultMatrices(test_toInvert2, testInverse2.inverse);
+console.log(testMult2)
+
+// need to implement some basic rounding next
