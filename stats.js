@@ -478,3 +478,4 @@ console.log(testMult2)
 
 // need to implement some basic rounding next
 // add comments throughout
+// optimize
